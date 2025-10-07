@@ -1,0 +1,72 @@
+{
+    "name": "Expense Tracker (Simple)",
+    "build": {
+        "dockerfile": "Dockerfile.simple",
+        "context": "."
+    },
+    "workspaceFolder": "/workspace",
+    // Configure tool-specific properties
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.flake8",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-vscode.vscode-typescript-next",
+                "bradlc.vscode-tailwindcss",
+                "esbenp.prettier-vscode",
+                "ms-vscode.vscode-json",
+                "ms-python.debugpy",
+                "ms-vscode.js-debug",
+                "formulahendry.auto-rename-tag",
+                "christian-kohler.path-intellisense",
+                "ms-vscode.vscode-eslint",
+                "ms-python.pylint"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.terminal.activateEnvironment": true,
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": true
+                },
+                "files.exclude": {
+                    "**/__pycache__": true,
+                    "**/*.pyc": true,
+                    "**/node_modules": true,
+                    "**/build": true,
+                    "**/.pytest_cache": true
+                },
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    },
+    // Port forwarding
+    "forwardPorts": [
+        3000,
+        5000
+    ],
+    "portsAttributes": {
+        "3000": {
+            "label": "React Frontend",
+            "onAutoForward": "notify"
+        },
+        "5000": {
+            "label": "Flask Backend",
+            "onAutoForward": "notify"
+        }
+    },
+    // Lifecycle scripts
+    "postCreateCommand": "pip install -r backend/requirements.txt && cd frontend && npm install",
+    "postStartCommand": "echo 'DevContainer is ready! Backend: cd backend && python run.py | Frontend: cd frontend && npm start'",
+    // Container user
+    "remoteUser": "vscode",
+    // Mount the workspace
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ]
+}

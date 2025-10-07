@@ -1,0 +1,72 @@
+{
+  "name": "Expense Tracker Full Stack",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  // Configure tool-specific properties
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.flake8",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json",
+        "ms-python.debugpy",
+        "ms-vscode.js-debug",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "ms-vscode.vscode-eslint",
+        "ms-python.pylint"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/workspace/backend/venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.formatting.blackPath": "/workspace/backend/venv/bin/black",
+        "python.sortImports.path": "/workspace/backend/venv/bin/isort",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          "**/node_modules": true,
+          "**/build": true,
+          "**/.pytest_cache": true
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  },
+  // Port forwarding
+  "forwardPorts": [
+    3000,
+    5000
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "React Frontend",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Flask Backend",
+      "onAutoForward": "notify"
+    }
+  },
+  // Lifecycle scripts
+  "postCreateCommand": "chmod +x .devcontainer/postCreateCommand.sh && bash .devcontainer/postCreateCommand.sh",
+  "postStartCommand": "echo 'DevContainer is ready! Run: npm run dev:all to start both services'",
+  // Container user
+  "remoteUser": "vscode",
+  // Mount the workspace
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ]
+}

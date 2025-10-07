@@ -303,7 +303,7 @@ config.local.js
 *.old
 
 # Development containers
-.devcontainer/
-!.devcontainer/devcontainer.json
-!.devcontainer/docker-compose.yml
-!.devcontainer/Dockerfile
+# .devcontainer/
+# !.devcontainer/devcontainer.json
+# !.devcontainer/docker-compose.yml
+# !.devcontainer/Dockerfile

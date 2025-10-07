@@ -1,0 +1,246 @@
+/* Common styles for buttons, inputs, and shared components */
+
+/* Button Styles */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-width: 4rem;
+}
+
+.btn:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Button Variants */
+.btn--primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn--primary:hover:not(.btn--disabled) {
+  background-color: #2563eb;
+}
+
+.btn--secondary {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn--secondary:hover:not(.btn--disabled) {
+  background-color: #4b5563;
+}
+
+.btn--danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn--danger:hover:not(.btn--disabled) {
+  background-color: #dc2626;
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+
+.btn--outline:hover:not(.btn--disabled) {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Button Sizes */
+.btn--small {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+}
+
+.btn--medium {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+}
+
+.btn--large {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+/* Button States */
+.btn--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn--loading {
+  cursor: wait;
+}
+
+.btn__spinner {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.btn__text--hidden {
+  opacity: 0;
+}
+
+.btn__text {
+  opacity: 1;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Input Styles */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.input__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.input__required {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #111827;
+  background-color: white;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.input:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.input--error {
+  border-color: #ef4444;
+}
+
+.input--error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #ef4444;
+}
+
+.input--disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.input__error {
+  display: block;
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+/* Select Styles */
+.select {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #111827;
+  background-color: white;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.select:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* Success Message */
+.success-message {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* Info Message */
+.info-message {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}

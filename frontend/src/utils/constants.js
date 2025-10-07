@@ -1,5 +1,5 @@
-// API Configuration
-export const API_BASE_URL = 'http://localhost:5000/api';
+// API Configuration - This will be dynamically set in api.js based on environment
+export const API_BASE_URL = 'https://obscure-space-engine-vq74jjqvqqfxxq7-5000.app.github.dev/api';
 
 // Expense Categories
 export const EXPENSE_CATEGORIES = [

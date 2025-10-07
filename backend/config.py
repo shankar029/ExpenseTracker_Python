@@ -10,8 +10,9 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     
-    # CORS settings
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
+    # CORS settings - Allow Codespaces and local development
+    default_origins = 'http://localhost:3000,http://127.0.0.1:3000,https://*.github.dev,https://*.app.github.dev,https://*.githubpreview.dev'
+    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', default_origins).split(',')
     
     # Pagination
     EXPENSES_PER_PAGE = 20

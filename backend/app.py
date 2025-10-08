@@ -22,7 +22,16 @@ def create_app(config_name=None):
     migrate = Migrate(app, db)
     
     # Initialize CORS - Allow all origins for development/testing
-    CORS(app, origins="*", supports_credentials=True)
+    # Note: When using credentials, we can't use "*" for origins, so we use a permissive function
+    def cors_origin_handler(origin):
+        # Allow all origins for development
+        return True
+    
+    CORS(app, 
+         origins=cors_origin_handler,
+         supports_credentials=True,
+         allow_headers=['Content-Type', 'Authorization'],
+         methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
     
     # Initialize JWT
     jwt = JWTManager(app)

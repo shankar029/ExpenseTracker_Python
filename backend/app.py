@@ -25,9 +25,32 @@ def create_app(config_name=None):
     # Note: When using credentials, we can't use "*" for origins, so we use a permissive function
     def cors_origin_handler(origin):
         # Allow all origins for development
+        print(f"DEBUG: CORS origin check for: {origin}")
         return True
     
-    CORS(app, 
+    # Add before_request handler to log all requests
+    @app.before_request
+    def log_request_info():
+        from flask import request
+        print(f"DEBUG: {request.method} {request.url}")
+        print(f"DEBUG: Origin header: {request.headers.get('Origin')}")
+        print(f"DEBUG: All headers: {dict(request.headers)}")
+        
+        # Handle preflight requests explicitly
+        if request.method == 'OPTIONS':
+            print("DEBUG: Handling OPTIONS preflight request")
+            response = jsonify({'status': 'OK'})
+            origin = request.headers.get('Origin')
+            if origin:
+                response.headers['Access-Control-Allow-Origin'] = origin
+            else:
+                response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            return response
+    
+    CORS(app,
          origins=cors_origin_handler,
          supports_credentials=True,
          allow_headers=['Content-Type', 'Authorization'],

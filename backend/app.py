@@ -27,8 +27,11 @@ def create_app(config_name=None):
         from flask import request
         print(f"DEBUG: {request.method} {request.url}")
         print(f"DEBUG: Origin header: {request.headers.get('Origin')}")
+        print(f"DEBUG: Allowed origins: {allowed_origins}")
+        print(f"DEBUG: CORS Origin Match Check - Request origin: '{request.headers.get('Origin')}'")
+        for origin in allowed_origins:
+            print(f"DEBUG: Checking against configured origin: '{origin}'")
         print(f"DEBUG: All headers: {dict(request.headers)}")
-        print(f"DEBUG: About to initialize CORS - checking origins parameter type")
     
     # Initialize CORS - Use proper origins configuration for development
     # For development, allow specific origins rather than a function
@@ -37,7 +40,7 @@ def create_app(config_name=None):
         "http://127.0.0.1:3000",
         "https://localhost:3000",
         "https://127.0.0.1:3000",
-        "https://obscure-space-engine-vq74jjqvqqfxxq7-3000.app.github.dev/"
+        "https://obscure-space-engine-vq74jjqvqqfxxq7-3000.app.github.dev"  # Removed trailing slash
     ]
     
    
@@ -50,6 +53,22 @@ def create_app(config_name=None):
          methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
     
     print("DEBUG: CORS initialized successfully")
+    
+    # Add after_request handler to ensure CORS headers on all responses
+    @app.after_request
+    def after_request(response):
+        from flask import request
+        origin = request.headers.get('Origin')
+        print(f"DEBUG: After request - Origin: {origin}, Status: {response.status_code}")
+        if origin in allowed_origins:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            print(f"DEBUG: Added CORS headers for origin: {origin}")
+        else:
+            print(f"DEBUG: Origin {origin} not in allowed origins: {allowed_origins}")
+        return response
     
     # Initialize JWT
     jwt = JWTManager(app)
@@ -82,27 +101,47 @@ def create_app(config_name=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(expenses_bp)
     
-    # Error handlers
+    # Error handlers with CORS headers
+    def add_cors_headers(response):
+        from flask import request
+        origin = request.headers.get('Origin')
+        if origin in allowed_origins:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        return response
+
     @app.errorhandler(400)
     def bad_request(error):
-        return jsonify({'error': 'Bad request'}), 400
+        response = jsonify({'error': 'Bad request'})
+        response.status_code = 400
+        return add_cors_headers(response)
     
     @app.errorhandler(401)
     def unauthorized(error):
-        return jsonify({'error': 'Unauthorized'}), 401
+        response = jsonify({'error': 'Unauthorized'})
+        response.status_code = 401
+        return add_cors_headers(response)
     
     @app.errorhandler(403)
     def forbidden(error):
-        return jsonify({'error': 'Forbidden'}), 403
+        response = jsonify({'error': 'Forbidden'})
+        response.status_code = 403
+        return add_cors_headers(response)
     
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({'error': 'Not found'}), 404
+        response = jsonify({'error': 'Not found'})
+        response.status_code = 404
+        return add_cors_headers(response)
     
     @app.errorhandler(500)
     def internal_error(error):
         db.session.rollback()
-        return jsonify({'error': 'Internal server error'}), 500
+        response = jsonify({'error': 'Internal server error'})
+        response.status_code = 500
+        return add_cors_headers(response)
     
     # Health check endpoint
     @app.route('/api/health', methods=['GET'])

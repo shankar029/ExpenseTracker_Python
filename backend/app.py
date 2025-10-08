@@ -21,13 +21,6 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate = Migrate(app, db)
     
-    # Initialize CORS - Allow all origins for development/testing
-    # Note: When using credentials, we can't use "*" for origins, so we use a permissive function
-    def cors_origin_handler(origin):
-        # Allow all origins for development
-        print(f"DEBUG: CORS origin check for: {origin}")
-        return True
-    
     # Add before_request handler to log all requests
     @app.before_request
     def log_request_info():
@@ -35,26 +28,28 @@ def create_app(config_name=None):
         print(f"DEBUG: {request.method} {request.url}")
         print(f"DEBUG: Origin header: {request.headers.get('Origin')}")
         print(f"DEBUG: All headers: {dict(request.headers)}")
-        
-        # Handle preflight requests explicitly
-        if request.method == 'OPTIONS':
-            print("DEBUG: Handling OPTIONS preflight request")
-            response = jsonify({'status': 'OK'})
-            origin = request.headers.get('Origin')
-            if origin:
-                response.headers['Access-Control-Allow-Origin'] = origin
-            else:
-                response.headers['Access-Control-Allow-Origin'] = '*'
-            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
-            return response
+        print(f"DEBUG: About to initialize CORS - checking origins parameter type")
+    
+    # Initialize CORS - Use proper origins configuration for development
+    # For development, allow specific origins rather than a function
+    allowed_origins = [
+        "http://localhost:3000",  # React dev server
+        "http://127.0.0.1:3000",
+        "https://localhost:3000",
+        "https://127.0.0.1:3000",
+        "https://obscure-space-engine-vq74jjqvqqfxxq7-3000.app.github.dev/"
+    ]
+    
+   
+    print(f"DEBUG: CORS allowed origins: {allowed_origins}")
     
     CORS(app,
-         origins=cors_origin_handler,
+         origins=allowed_origins,
          supports_credentials=True,
          allow_headers=['Content-Type', 'Authorization'],
          methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+    
+    print("DEBUG: CORS initialized successfully")
     
     # Initialize JWT
     jwt = JWTManager(app)
@@ -266,4 +261,12 @@ if __name__ == '__main__':
     app = create_app()
     with app.app_context():
         db.create_all()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    
+    # GitHub Codespaces specific configuration
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    print(f"🚀 Starting server on port {port}")
+    print(f"🌐 In GitHub Codespaces, make sure port {port} is set to 'Public' visibility")
+    print(f"📍 Backend should be accessible at: https://{os.environ.get('CODESPACE_NAME', 'localhost')}-{port}.app.github.dev")
+    
+    app.run(debug=True, host='0.0.0.0', port=port)

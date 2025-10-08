@@ -27,6 +27,11 @@ def main():
             print(f"❌ Database initialization failed: {e}")
             return
     
+    # Debug CORS configuration
+    print("🌐 CORS Configuration: Allowing ALL origins (*)")
+    print("⚠️  Warning: This is for development/testing only!")
+    print("🔓 All cross-origin requests will be accepted")
+    
     # Start the development server
     print("🚀 Starting Expense Tracker Backend...")
     print("📍 Server running at: http://localhost:5000")

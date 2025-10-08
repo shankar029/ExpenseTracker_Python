@@ -21,34 +21,8 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate = Migrate(app, db)
     
-    # Initialize CORS - Handle both specific origins and wildcard patterns
-    cors_origins = app.config['CORS_ORIGINS']
-    
-    # Check if we have wildcard patterns that need special handling
-    has_wildcards = any('*' in origin for origin in cors_origins)
-    
-    if has_wildcards:
-        # For Codespaces, we need to allow all subdomains dynamically
-        def cors_origin_handler(origin):
-            if not origin:
-                return False
-            
-            # Allow localhost origins
-            if origin in ['http://localhost:3000', 'http://127.0.0.1:3000']:
-                return True
-                
-            # Allow Codespaces origins
-            if (origin.startswith('https://') and
-                (origin.endswith('.github.dev') or
-                 origin.endswith('.app.github.dev') or
-                 origin.endswith('.githubpreview.dev'))):
-                return True
-                
-            return False
-        
-        CORS(app, origins=cors_origin_handler, supports_credentials=True)
-    else:
-        CORS(app, origins=cors_origins, supports_credentials=True)
+    # Initialize CORS - Allow all origins for development/testing
+    CORS(app, origins="*", supports_credentials=True)
     
     # Initialize JWT
     jwt = JWTManager(app)
